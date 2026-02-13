@@ -9,10 +9,10 @@ export default function Address() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔑 letterId comes from navigation state
+  // 🔑 letterId from navigation state
   const letterId = location.state?.letterId;
 
-  // 🔐 Guard: if someone refreshes or opens directly
+  // 🔐 Guard: prevent direct access
   useEffect(() => {
     if (!letterId) {
       navigate("/write");
@@ -30,9 +30,7 @@ export default function Address() {
     phone: "",
   });
 
-  const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const countries = [
@@ -46,23 +44,20 @@ export default function Address() {
     { code: "JP", name: "Japan" },
   ];
 
-  // ✅ Validation
+  // ✅ Simple validation
   useEffect(() => {
-    const newErrors = {};
-    if (!address.name.trim()) newErrors.name = "Name is required";
-    if (!address.street.trim()) newErrors.street = "Street is required";
-    if (!address.city.trim()) newErrors.city = "City is required";
-    if (!address.postalCode.trim())
-      newErrors.postalCode = "Postal code is required";
-    if (!address.country) newErrors.country = "Country is required";
+    const valid =
+      address.name.trim() &&
+      address.street.trim() &&
+      address.city.trim() &&
+      address.postalCode.trim() &&
+      address.country;
 
-    setErrors(newErrors);
-    setIsValid(Object.keys(newErrors).length === 0);
+    setIsValid(Boolean(valid));
   }, [address]);
 
   // ✅ Save address
   const handleSubmit = async () => {
-    setIsSubmitted(true);
     if (!isValid) return;
 
     try {
@@ -79,7 +74,7 @@ export default function Address() {
         }
       );
 
-      // 🔥 Navigate using URL param (Preview is param-based)
+      // Navigate to preview
       navigate(`/preview/${letterId}`);
     } catch (error) {
       console.error("Save address failed:", error);

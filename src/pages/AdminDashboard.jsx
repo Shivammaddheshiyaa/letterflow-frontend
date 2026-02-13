@@ -85,12 +85,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const getFilterColor = (color, isActive) => {
-    if (isActive) {
-      return `bg-${color}-600 text-white`;
-    }
-    return `bg-${color}-50 text-${color}-700 hover:bg-${color}-100`;
-  };
+  
 
   if (loading) {
     return (
